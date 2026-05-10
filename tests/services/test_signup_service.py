@@ -6,23 +6,7 @@ import pytest
 from services.signup.signup import SignupService, UserAlreadyExistsError
 from services.signup.signup_queries import insert_user_query
 
-
-class FakeDB:
-    """Minimal stand-in for repository.database.Database.
-
-    Each entry in ``responses`` is either a row dict (or ``None``) to be
-    returned, or an Exception instance to be raised on the matching call."""
-
-    def __init__(self, responses):
-        self._responses = list(responses)
-        self.calls: list[tuple[str, tuple]] = []
-
-    async def fetchrow(self, query, *args):
-        self.calls.append((query, args))
-        response = self._responses[len(self.calls) - 1]
-        if isinstance(response, Exception):
-            raise response
-        return response
+from tests.fakes import FakeDB
 
 
 @pytest.mark.asyncio

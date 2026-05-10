@@ -4,23 +4,13 @@ from services.JWT.jwt import JWT
 from services.login.login import InvalidCredentialsError, LoginService
 from services.signup.signup_utils import hash_password
 
-
-class FakeDB:
-    """Minimal stand-in for repository.database.Database."""
-
-    def __init__(self, fetchrow_responses):
-        self._responses = list(fetchrow_responses)
-        self.calls: list[tuple[str, tuple]] = []
-
-    async def fetchrow(self, query, *args):
-        self.calls.append((query, args))
-        return self._responses[len(self.calls) - 1]
+from tests.fakes import FakeDB
 
 
 @pytest.mark.asyncio
 async def test_login_success_returns_token_and_user():
     db = FakeDB(
-        fetchrow_responses=[
+        responses=[
             {
                 "id": 5,
                 "email": "user@example.com",
@@ -48,7 +38,7 @@ async def test_login_success_returns_token_and_user():
 @pytest.mark.asyncio
 async def test_login_raises_for_wrong_password():
     db = FakeDB(
-        fetchrow_responses=[
+        responses=[
             {
                 "id": 5,
                 "email": "user@example.com",
@@ -65,7 +55,7 @@ async def test_login_raises_for_wrong_password():
 
 @pytest.mark.asyncio
 async def test_login_raises_when_user_not_found():
-    db = FakeDB(fetchrow_responses=[None])
+    db = FakeDB(responses=[None])
     service = LoginService(db=db)
 
     with pytest.raises(InvalidCredentialsError, match="Invalid email or password"):
@@ -76,7 +66,7 @@ async def test_login_raises_when_user_not_found():
 async def test_login_uses_injected_jwt_service():
     """Regression: the service must honour the injected JWT instance."""
     db = FakeDB(
-        fetchrow_responses=[
+        responses=[
             {
                 "id": 7,
                 "email": "user@example.com",

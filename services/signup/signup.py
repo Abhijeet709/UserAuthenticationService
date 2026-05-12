@@ -17,10 +17,6 @@ from services.utils import normalize_email
 logger = logging.getLogger(__name__)
 
 
-class UserAlreadyExistsError(Exception):
-    """Raised when a signup is rejected because the email is already taken."""
-
-
 class SignupService:
     def __init__(self, db: Database) -> None:
         self.db = db

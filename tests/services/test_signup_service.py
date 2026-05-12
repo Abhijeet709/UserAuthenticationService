@@ -17,6 +17,7 @@ async def test_signup_success_hashes_password_and_returns_inserted_user():
         ]
     )
     service = SignupService(db=db)
+    # Todo: Use Pydantic model instead of SimpleNamespace
     payload = SimpleNamespace(
         email="  USER@Example.com ",
         password="Password123",

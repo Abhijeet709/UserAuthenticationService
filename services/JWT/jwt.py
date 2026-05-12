@@ -5,18 +5,7 @@ from typing import Any, Optional
 import jwt as _jwt
 
 from configs.settings import get_settings
-
-
-class TokenError(Exception):
-    """Base class for JWT verification errors."""
-
-
-class TokenExpired(TokenError):
-    pass
-
-
-class InvalidToken(TokenError):
-    pass
+from services.JWT.jwt_errors import TokenExpired, InvalidToken
 
 
 class JWT:
@@ -47,6 +36,6 @@ class JWT:
         try:
             return _jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
         except _jwt.ExpiredSignatureError as exc:
-            raise TokenExpired("Token has expired.") from exc
+            raise TokenExpired(exc)
         except _jwt.InvalidTokenError as exc:
-            raise InvalidToken("Invalid token.") from exc
+            raise InvalidToken(exc)

@@ -8,6 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from configs.settings import get_settings
 from controller.controller import router
 from repository.database import Database
+from services.exception_handler import app_error_handler
+from services.errors import AppError
 
 
 def _configure_logging(level: str) -> None:
@@ -49,6 +51,7 @@ def create_app() -> FastAPI:
     )
 
     app.include_router(router)
+    app.add_exception_handler(AppError, app_error_handler)
 
     @app.get("/", tags=["Health"])
     async def root() -> dict:

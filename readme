@@ -1,0 +1,14 @@
+[ Client (Web) ]
+        |
+   API Gateway (FastAPI)
+        |
+   Auth Service
+        |
+ ┌───────────────┬───────────────┐
+ | Postgres      | Redis         |
+ | (users)       | (sessions)    |
+ └───────────────┴───────────────┘
+        |
+   Background Workers (optional)
+
+
